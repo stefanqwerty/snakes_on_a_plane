@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace snakes_on_a_plane
@@ -15,43 +9,34 @@ namespace snakes_on_a_plane
         public string WhichDirection;
         public int BlockSize = 20;
 
+        Game Game = new Game();
+
         public Form1()
         {
             InitializeComponent();
             LoadBitmap();
-            initiateBitmap();
-        }
-
-        
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            LoadBitmap();
-        }
-
-        Game Game = new Game();
-
-        public void initiateBitmap()
-        {
-            Bitmap bitmap = new Bitmap(1600, 800);
         }
 
         public void LoadBitmap()
         {
             int lenght = 1600;
             int width = 800;
-            int centerRow = lenght / 2;
-            int centerLine = width / 2;
+            int centerLine = lenght / 2;
+            int centerRow = width / 2;
             Bitmap bitmap = new Bitmap(lenght, width);
             Graphics graphics = Graphics.FromImage(bitmap);
-            var colourPen = new Pen(Brushes.DarkGreen);
            
             graphics.FillRectangle(Brushes.Black, 0, 0, 1600, 800);
             //graphics.FillRectangle(Brushes.LightGreen, 400, 300, 10, 10);
             pictureBox1.Image = bitmap;
-            //HeadPos.Text = Game.Snake.Head.position.column.ToString() + " , " + Game.Snake.Head.position.row.ToString();
-            graphics.FillRectangle(Brushes.Green, Game.Snake.Head.position.row, Game.Snake.Head.position.column, 20, 20);
-            graphics.FillRectangle(Brushes.Red, Game.Snake.Food.Position.row, Game.Snake.Food.Position.column, 20, 20);
+            HeadPos.Text = Game.Snake.Head.position.column.ToString() + " , " + Game.Snake.Head.position.row.ToString();
+            graphics.FillRectangle(Brushes.Red, convert(Game.Snake.Food.Position.row), convert(Game.Snake.Food.Position.column), 20, 20);
+            var temp = Game.Snake.Head;
+            while(temp.next != null)
+            {
+                graphics.FillRectangle(Brushes.Green, convert(temp.position.row), convert(temp.position.column), 20, 20);
+                temp = temp.next;
+            }
         }
 
 
@@ -62,19 +47,31 @@ namespace snakes_on_a_plane
             {
                 if (WhichDirection == "right")
                 {
-                    Game.Snake.direction = Snake.Direction.Right;
+                    if (Game.Snake.TryChangeDirection(Snake.Direction.Right))
+                    {
+                        Game.Snake.direction = Snake.Direction.Right;
+                    }
                 }
                 if (WhichDirection == "down")
                 {
-                    Game.Snake.direction = Snake.Direction.Down;
+                    if (Game.Snake.TryChangeDirection(Snake.Direction.Down))
+                    {
+                        Game.Snake.direction = Snake.Direction.Down;
+                    }
                 }
                 if (WhichDirection == "left")
                 {
-                    Game.Snake.direction = Snake.Direction.Left;
+                    if (Game.Snake.TryChangeDirection(Snake.Direction.Left))
+                    {
+                        Game.Snake.direction = Snake.Direction.Left;
+                    }
                 }
                 if (WhichDirection == "up")
                 {
-                    Game.Snake.direction = Snake.Direction.Up;
+                    if (Game.Snake.TryChangeDirection(Snake.Direction.Up))
+                    {
+                        Game.Snake.direction = Snake.Direction.Up;
+                    }
                 }
 
                 Game.Snake.Move(Game.Snake.direction);
@@ -87,7 +84,10 @@ namespace snakes_on_a_plane
             }
         }
 
-        
+        public int convert(int GameElementPosition)
+        {
+            return BlockSize * GameElementPosition;
+        }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {

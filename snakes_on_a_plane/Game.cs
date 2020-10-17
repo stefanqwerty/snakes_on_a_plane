@@ -19,15 +19,15 @@ namespace snakes_on_a_plane
         {
             for (int x = 0; x < 80; x++)
             {
-                for (int y = 0; y < 0; y++)
+                for (int y = 0; y < 40; y++)
                 {
                     Position PossiblePosition = new Position();
-                    PossiblePosition.row = x;
-                    PossiblePosition.column = y;
+                    PossiblePosition.column = x;
+                    PossiblePosition.row = y;
                     allPossiblePositions.Add(PossiblePosition);
-                    y += 20;
+                    y++;
                 }
-                x += 20;
+                x++;
             }
         }
 
@@ -60,14 +60,22 @@ namespace snakes_on_a_plane
         public bool NextFrame()
         {
             var nextHeadPos = Snake.GetNextPosition();
+
             if (nextHeadPos == Snake.Food.Position)
             {
                 Snake.Eat(GetNewPositionForFood());
             }
-            if (SnakeElements.Contains(nextHeadPos) || !(nextHeadPos.IsOutOfGame(nextHeadPos.column, nextHeadPos.row)))
+
+            if (SnakeElements.Contains(nextHeadPos))
             {
                 return false;
             }
+
+            if (nextHeadPos.IsOutOfGame(nextHeadPos.column, nextHeadPos.row))
+            {
+                return false;
+            }
+
             return true;
         }
 

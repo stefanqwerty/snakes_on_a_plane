@@ -10,8 +10,8 @@ namespace snakes_on_a_plane
 {
     public class Snake
     {
-        int CenterRow = 800;
-        int CenterCollumn = 400;
+        int CenterRow = 20;
+        int CenterCollumn = 40;
         int GrowFactor = 0;
         int Lenght = 0;
         public Position center = new Position();
@@ -179,7 +179,6 @@ namespace snakes_on_a_plane
         {
             if (TryChangeDirection(nextDirection))
             { 
-                direction = nextDirection;
                 GrowNewHead(GetNextPosition());
                 if (GrowFactor == 0)
                 {
@@ -199,7 +198,7 @@ namespace snakes_on_a_plane
 
         public Snake() 
         {
-            Head = new SnakeElement(CenterRow, CenterCollumn);
+            Head = new SnakeElement(CenterCollumn, CenterRow);
             direction = Direction.Up;
         }
 
@@ -232,16 +231,16 @@ namespace snakes_on_a_plane
             switch (direction)
             {
                 case Direction.Up:
-                    NextSnakePosition.column -= 20;
+                    NextSnakePosition.column--;
                     break;
                 case Direction.Down:
-                    NextSnakePosition.column +=  20;
+                    NextSnakePosition.column++;
                     break;
                 case Direction.Left:
-                    NextSnakePosition.row -= 20;
+                    NextSnakePosition.row--;
                     break;
                 case Direction.Right:
-                    NextSnakePosition.row += 20;
+                    NextSnakePosition.row++;
                     break;
                 default:
                     break;

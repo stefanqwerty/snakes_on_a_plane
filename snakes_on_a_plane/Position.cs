@@ -9,10 +9,30 @@
 
         }
 
-        public bool IsOutOfGame(int columns, int rows) => row < 0
-                                                        || row >= rows
-                                                        || column < 0
-                                                        || column >= columns;
+        public bool IsOutOfGame(int columns, int rows)
+        {
+            if (columns >= 40)
+            {
+                return true;
+            }
+
+            if (rows >= 80)
+            {
+                return true;
+            }
+
+            if (columns < 0 )
+            {
+                return true;
+            }
+
+            if (rows < 0)
+            {
+                return true;
+            }
+
+            return false;
+        }
 
     }
 }
