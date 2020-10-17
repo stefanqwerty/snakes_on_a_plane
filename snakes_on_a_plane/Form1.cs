@@ -15,7 +15,7 @@ namespace snakes_on_a_plane
         public Form1()
         {
             InitializeComponent();
-            //Draw();
+            Draw();
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -42,7 +42,7 @@ namespace snakes_on_a_plane
             }
             else
             {
-                Application.Exit();
+                //Application.Exit();
             }
         }
 

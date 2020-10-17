@@ -38,7 +38,9 @@ namespace snakes_on_a_plane
 
         public void SetAllPossibleFoodPositions()
         {
-            AllPossibleFoodPositions = (List<Position>)AllPossiblePositions.Except(Snake.GetAllSnakeElements());
+            var positions = Snake.GetAllSnakeElements();
+            var temp = AllPossiblePositions.Except(positions).ToList<Position>();
+            AllPossibleFoodPositions = (List<Position>)temp;
         }
 
         public Position GetNewPositionForFood()
