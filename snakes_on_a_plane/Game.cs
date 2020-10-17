@@ -26,6 +26,7 @@ namespace snakes_on_a_plane
 
         public void SetAllPositions()
         {
+            AllPossiblePositions = new List<Position>();
             for (int x = 0; x < Columns; x++)
             {
                 for (int y = 0; y < Rows; y++)
