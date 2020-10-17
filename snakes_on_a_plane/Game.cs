@@ -1,77 +1,68 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Forms;
-using System.Xml.Linq;
 
 namespace snakes_on_a_plane
 {
     public class Game
     {
-        public Snake Snake = new Snake();
-        public List<Position> allPossiblePositions = new List<Position>();
-        public List<Position> allPossibleFoodPositions = new List<Position>();
-        List<Position> SnakeElements = new List<Position>();
-        bool isFirstFrame = true;
+        public int Rows = 40;
+        public int Columns = 80;
+        Position CenterPosition;
 
-        public void getAllPositions()
-        {
-            for (int x = 0; x < 80; x++)
-            {
-                for (int y = 0; y < 40; y++)
-                {
-                    Position PossiblePosition = new Position();
-                    PossiblePosition.column = x;
-                    PossiblePosition.row = y;
-                    allPossiblePositions.Add(PossiblePosition);
-                    y++;
-                }
-                x++;
-            }
-        }
+        public Snake Snake;
+        public Food Food;
+        public List<Position> AllPossiblePositions;
+        public List<Position> AllPossibleFoodPositions;
 
         public Game()
         {
-            getAllPositions();
+            SetAllPositions();
+            CenterPosition = new Position(Columns / 2, Rows / 2);
+            Snake = new Snake(CenterPosition);
+            Food = new Food();
+            Food.SetPositionAndValue(GetNewPositionForFood());
         }
 
-        public void getAllPossibleFoodPositions()
+        public void SetAllPositions()
         {
-            SnakeElements = Snake.GetAllSnakeElements();
-            allPossibleFoodPositions = (List<Position>)allPossiblePositions.Except(SnakeElements);
+            for (int x = 0; x < Columns; x++)
+            {
+                for (int y = 0; y < Rows; y++)
+                {
+                    AllPossiblePositions.Add(new Position(x, y));
+                }
+            }
+        }
+
+        public void SetAllPossibleFoodPositions()
+        {
+            AllPossibleFoodPositions = (List<Position>)AllPossiblePositions.Except(Snake.GetAllSnakeElements());
         }
 
         public Position GetNewPositionForFood()
         {
-            if (isFirstFrame)
-            {
-                Snake.Eat(GetNewPositionForFood());
-                isFirstFrame = false;
-            }
-            getAllPossibleFoodPositions();
-            var k = new Random();
-            int rand = k.Next(allPossibleFoodPositions.Count() - 1);
-            Position result = new Position();
-            result = allPossibleFoodPositions[rand];
-            return result;
+            SetAllPossibleFoodPositions();
+            int rand = new Random().Next(AllPossibleFoodPositions.Count() - 1);
+            return AllPossibleFoodPositions[rand];
         }
 
         public bool NextFrame()
         {
             var nextHeadPos = Snake.GetNextPosition();
 
-            if (nextHeadPos == Snake.Food.Position)
+            if (nextHeadPos == Food)
             {
-                Snake.Eat(GetNewPositionForFood());
+                Snake.Eat(Food.Value);
+                Food.SetPositionAndValue(GetNewPositionForFood());
             }
 
-            if (SnakeElements.Contains(nextHeadPos))
+            if (Snake.GetAllSnakeElements().Contains(nextHeadPos))
             {
                 return false;
             }
 
-            if (nextHeadPos.IsOutOfGame(nextHeadPos.column, nextHeadPos.row))
+            if (IsPositionOutOfGame(nextHeadPos))
             {
                 return false;
             }
@@ -79,6 +70,12 @@ namespace snakes_on_a_plane
             return true;
         }
 
-        
+        public bool IsPositionOutOfGame(Position Position)
+        {
+            return (Position.Column < 0)
+                || (Position.Column >= Columns)
+                || (Position.Row < 0)
+                || (Position.Row >= Rows);
+        }
     }
 }

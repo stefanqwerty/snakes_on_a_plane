@@ -2,37 +2,15 @@
 {
     public class Position 
     {
-        public int column;
-        public int row;
+        public int Column;
+        public int Row;
+
         public Position()
         {
-
         }
 
-        public bool IsOutOfGame(int columns, int rows)
-        {
-            if (columns >= 40)
-            {
-                return true;
-            }
+        public Position(int SendColumn, int SendRow) => (Column, Row) = (SendColumn, SendRow);
 
-            if (rows >= 80)
-            {
-                return true;
-            }
-
-            if (columns < 0 )
-            {
-                return true;
-            }
-
-            if (rows < 0)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
+        public string ToString() => $"{Column}, {Row}";
     }
 }

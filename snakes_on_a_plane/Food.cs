@@ -3,19 +3,16 @@
     public class Food : Position
     {
         public int Value;
-        public Position Position = new Position();
+        
         public Food()
         {
             Value = 0;
         }
-        public void SetPositionAndValue(Position position)
+        
+        public void SetPositionAndValue(Position Position)
         {
-            Position = position;
-            SetNextFoodValue();
-        }
+            (Column, Row) = (Position.Column, Position.Row);
 
-        private void SetNextFoodValue()
-        {
             Value++;
         }
     }

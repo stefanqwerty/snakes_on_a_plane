@@ -1,252 +1,115 @@
-﻿using System.CodeDom.Compiler;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Drawing.Printing;
-using System.Drawing.Text;
-using System.Runtime.InteropServices;
 
 namespace snakes_on_a_plane
 {
     public class Snake
     {
-        int CenterRow = 20;
-        int CenterCollumn = 40;
         int GrowFactor = 0;
-        int Lenght = 0;
-        public Position center = new Position();
-        Position HeadPosition = new Position();
+
         public SnakeElement Head = new SnakeElement();
-        public Food Food = new Food();
-        
-        public enum Direction
+
+        private Direction Direction = new Direction();
+
+        public Snake(Position SendPosition)
         {
-            Up,
-            Down,
-            Left,
-            Right
+            Head = new SnakeElement(SendPosition);
+            Direction = Direction.Up;
         }
-        public Direction direction = new Direction();
 
         public void GrowNewHead(Position position)
         {
             var element = new SnakeElement(position);
-            element.next = Head;
+            element.Next = Head;
             Head = element;
         }
 
         public class SnakeElement
         {
-            public Position position = new Position();
-            public SnakeElement next;
+            public Position Position = new Position();
+            public SnakeElement Next;
 
             public SnakeElement()
             {
             }
 
-            public SnakeElement(Position sendPosition)
+            public SnakeElement(Position SendPosition)
             {
-                position = sendPosition;
-            }
-            public SnakeElement(int sendRow, int sendColumn)
-            {
-                position.row = sendRow;
-                position.column = sendColumn;
+                Position = SendPosition;
             }
         }
 
-        public List<Position> GetAllSnakeElements()
+        public ReadOnlyCollection<Position> GetAllSnakeElements()
         {
             var result = new List<Position>();
-            var currentSnakeElement = Head.next;
+
+            var currentSnakeElement = Head;
+
             while (currentSnakeElement != null)
             {
-                result.Add(currentSnakeElement.position);
-                currentSnakeElement = currentSnakeElement.next;
+                result.Add(currentSnakeElement.Position);
+                currentSnakeElement = currentSnakeElement.Next;
             }
 
-            return result;
+            return result.AsReadOnly();
         }
 
-        #region Move
-        public void GoLeft()
+        public void MoveAndGrow()
         {
-            if (TryChangeDirection(Direction.Left))
+            GrowNewHead(GetNextPosition());
+
+            if (GrowFactor == 0)
             {
-                direction = Direction.Left;
-               
-                if (GrowFactor == 0)
-                {
-                    GrowNewHead(GetNextPosition());
-                    var tempElement = Head;
-                    while (tempElement.next != null)
-                    {
-                        tempElement = tempElement.next;
-                    }
-                    tempElement.next = null;
-                    
-                }
-                if (GrowFactor > 0)
-                {
-                    GrowFactor--;
-                    GrowNewHead(GetNextPosition());
-                    
-                }
-            }
-        }
+                var TempElement = Head;
 
-        public void GoRight()
-        {
-            if (TryChangeDirection(Direction.Right))
+                while (TempElement.Next.Next != null)
+                {
+                    TempElement = TempElement.Next;
+                }
+                
+                TempElement.Next = null;
+            }
+
+            if (GrowFactor > 0)
             {
-                direction = Direction.Right;
-
-
-                if (GrowFactor == 0)
-                {
-                    GrowNewHead(GetNextPosition());
-                    var tempElement = Head;
-                    while (tempElement.next != null)
-                    {
-                        tempElement = tempElement.next;
-                    }
-                    tempElement.next = null;
-
-                }
-                if (GrowFactor > 0)
-                {
-                    GrowFactor--;
-                    GrowNewHead(GetNextPosition());
-
-                }
+                GrowFactor--;
             }
         }
 
-        public void GoUp()
+        public void Eat(int FoodValue)
         {
-            if (TryChangeDirection(Direction.Up))
-            {
-                direction = Direction.Up;
-
-
-                if (GrowFactor == 0)
-                {
-                    GrowNewHead(GetNextPosition());
-                    var tempElement = Head;
-                    while (tempElement.next != null)
-                    {
-                        tempElement = tempElement.next;
-                    }
-                    tempElement.next = null;
-
-                }
-                if (GrowFactor > 0)
-                {
-                    GrowFactor--;
-                    GrowNewHead(GetNextPosition());
-
-                }
-            }
-        }
-        public void GoDown()
-        {
-            if (TryChangeDirection(Direction.Down))
-            {
-                direction = Direction.Down;
-
-                if (GrowFactor == 0)
-                {
-                    GrowNewHead(GetNextPosition());
-                    var tempElement = Head;
-                    while (tempElement.next != null)
-                    {
-                        tempElement = tempElement.next;
-                    }
-                    tempElement.next = null;
-
-                }
-                if (GrowFactor > 0)
-                {
-                    GrowFactor--;
-                    GrowNewHead(GetNextPosition());
-
-                }
-            }
-        }
-        #endregion    
-
-        public void Move(Direction nextDirection)
-        {
-            if (TryChangeDirection(nextDirection))
-            { 
-                GrowNewHead(GetNextPosition());
-                if (GrowFactor == 0)
-                {
-                    var tempElement = Head;
-                    while (tempElement.next != null)
-                    {
-                        tempElement = tempElement.next;
-                    }
-                    tempElement.next = null;
-                }
-                if(GrowFactor > 0)
-                {
-                    GrowFactor--;
-                }
-            }
+            GrowFactor += FoodValue;
         }
 
-        public Snake() 
+        public bool TryChangeDirection(Direction NewDirection)
         {
-            Head = new SnakeElement(CenterCollumn, CenterRow);
-            direction = Direction.Up;
-        }
-
-        public void Eat(Position FoodPosition)
-        {
-            Food.SetPositionAndValue(FoodPosition);
-        }
-        
-        public bool TryChangeDirection(Direction newDirection)
-        {
-            if ((newDirection == Direction.Up && direction == Direction.Down)
-             || (newDirection == Direction.Right && direction == Direction.Left)
-             || (newDirection == Direction.Down && direction == Direction.Up)
-             || (newDirection == Direction.Left && direction == Direction.Right))
+            if ((NewDirection == Direction.Up && Direction == Direction.Down)
+             || (NewDirection == Direction.Right && Direction == Direction.Left)
+             || (NewDirection == Direction.Down && Direction == Direction.Up)
+             || (NewDirection == Direction.Left && Direction == Direction.Right))
             {
                 return false;
             }
 
-            direction = newDirection;
+            Direction = NewDirection;
 
             return true;
         }
 
         public Position GetNextPosition()
         {
-            Position NextSnakePosition = new Position();
-            NextSnakePosition.column = Head.position.column;
-            NextSnakePosition.row = Head.position.row;
+            Position NextSnakePosition = Head.Position;
 
-            switch (direction)
+            _ = (Direction switch
             {
-                case Direction.Up:
-                    NextSnakePosition.column--;
-                    break;
-                case Direction.Down:
-                    NextSnakePosition.column++;
-                    break;
-                case Direction.Left:
-                    NextSnakePosition.row--;
-                    break;
-                case Direction.Right:
-                    NextSnakePosition.row++;
-                    break;
-                default:
-                    break;
-            };
+                Direction.Up => NextSnakePosition.Column--,
+                Direction.Down => NextSnakePosition.Column++,
+                Direction.Left => NextSnakePosition.Row--,
+                Direction.Right => NextSnakePosition.Row++,
+                _ => throw new System.NotImplementedException(),
+            });
+
             return NextSnakePosition;
         }
     }
-
 }
