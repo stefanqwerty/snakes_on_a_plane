@@ -32,6 +32,7 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.HeadPos = new System.Windows.Forms.Label();
+            this.countdownLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -44,6 +45,7 @@
             this.pictureBox1.Size = new System.Drawing.Size(1600, 800);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
             // timer1
             // 
@@ -54,6 +56,7 @@
             // HeadPos
             // 
             this.HeadPos.AutoSize = true;
+            this.HeadPos.BackColor = System.Drawing.Color.Black;
             this.HeadPos.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.HeadPos.ForeColor = System.Drawing.Color.Red;
             this.HeadPos.Location = new System.Drawing.Point(12, 549);
@@ -61,17 +64,32 @@
             this.HeadPos.Size = new System.Drawing.Size(36, 39);
             this.HeadPos.TabIndex = 1;
             this.HeadPos.Text = "0";
+            this.HeadPos.Visible = false;
+            // 
+            // countdownLabel
+            // 
+            this.countdownLabel.AutoSize = true;
+            this.countdownLabel.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.countdownLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 200.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.countdownLabel.ForeColor = System.Drawing.Color.Green;
+            this.countdownLabel.Location = new System.Drawing.Point(500, 178);
+            this.countdownLabel.Name = "countdownLabel";
+            this.countdownLabel.Size = new System.Drawing.Size(0, 302);
+            this.countdownLabel.TabIndex = 2;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1600, 800);
+            this.Controls.Add(this.countdownLabel);
             this.Controls.Add(this.HeadPos);
             this.Controls.Add(this.pictureBox1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Location = new System.Drawing.Point(100, 100);
             this.Name = "Form1";
-            this.Text = "Form1";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
+            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Form1_KeyPress);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -83,6 +101,7 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Label HeadPos;
+        private System.Windows.Forms.Label countdownLabel;
     }
 }
 

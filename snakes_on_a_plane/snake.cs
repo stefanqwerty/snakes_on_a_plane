@@ -5,7 +5,7 @@ namespace snakes_on_a_plane
 {
     public class Snake
     {
-        int GrowFactor = 0;
+        int GrowFactor = 3;
 
         public SnakeElement Head = new SnakeElement();
 
@@ -98,14 +98,14 @@ namespace snakes_on_a_plane
 
         public Position GetNextPosition()
         {
-            Position NextSnakePosition = Head.Position;
+            Position NextSnakePosition = new Position(Head.Position.Column, Head.Position.Row);
 
             _ = (Direction switch
             {
-                Direction.Up => NextSnakePosition.Column--,
-                Direction.Down => NextSnakePosition.Column++,
-                Direction.Left => NextSnakePosition.Row--,
-                Direction.Right => NextSnakePosition.Row++,
+                Direction.Left => NextSnakePosition.Column--,
+                Direction.Right => NextSnakePosition.Column++,
+                Direction.Up => NextSnakePosition.Row--,
+                Direction.Down => NextSnakePosition.Row++,
                 _ => throw new System.NotImplementedException(),
             });
 

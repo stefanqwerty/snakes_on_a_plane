@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Media;
 
 namespace snakes_on_a_plane
 {
@@ -15,6 +16,8 @@ namespace snakes_on_a_plane
         public List<Position> AllPossiblePositions;
         public List<Position> AllPossibleFoodPositions;
 
+        public string startupPath = System.IO.Directory.GetCurrentDirectory();
+        
         public Game()
         {
             SetAllPositions();
@@ -52,13 +55,28 @@ namespace snakes_on_a_plane
 
         public bool NextFrame()
         {
+
             var nextHeadPos = Snake.GetNextPosition();
 
-            if (nextHeadPos == Food)
+            if ((nextHeadPos.Column, nextHeadPos.Row) == (Food.Column, Food.Row))
             {
+                SoundPlayer snd = new SoundPlayer(startupPath + "\\Powerup3.wav");
+
+                snd.Play();
+
                 Snake.Eat(Food.Value);
                 Food.SetPositionAndValue(GetNewPositionForFood());
             }
+
+            /*var Temp = Snake.Head;
+            while (Temp.Next != null)
+            {
+                if (Temp.Position == Snake.GetNextPosition())
+                {
+                    return false;
+                }
+                Temp = Temp.Next;
+            }*/
 
             if (Snake.GetAllSnakeElements().Contains(nextHeadPos))
             {
